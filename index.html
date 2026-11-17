@@ -592,9 +592,23 @@
       --band: calc(env(safe-area-inset-top, 0px) + 60px);   /* solid gray, down to just below the dots */
       --band-fade: 28px;                                    /* then a short fade into the content */
     }
+    /* The band and timeline stay out of the way over the intro, so the page starts level with the sidebar */
     .page {
-      padding-top: calc(var(--band) + var(--band-fade));
+      padding-top: calc(var(--gap) + env(safe-area-inset-top, 0px));
       padding-bottom: calc(var(--gap) + env(safe-area-inset-bottom, 0px));
+    }
+    /* Hidden until the intro section has scrolled away (JS adds .tl-show), then they slide down into place */
+    .abyss, .timeline {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-12px);
+      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
+    }
+    .tl-show .abyss, .tl-show .timeline {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition-delay: 0s;
     }
     .abyss {
       top: 0;
@@ -614,6 +628,9 @@
     }
     /* Section links land just below the band */
     .panel, .photo { scroll-margin-top: calc(var(--band) + var(--band-fade)); }
+  }
+  @media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+    .abyss, .timeline { transition: none; transform: none; }
   }
 
   /* ---------- Live demo: TrustRadius research rail + intent signals ----------
@@ -3033,7 +3050,11 @@
   }
 
   let shown = -1;
+  // Phones show the timeline only once the intro section has scrolled up under where the band sits
+  const intro = items[0].sec;
   function update() {
+    const past = intro.getBoundingClientRect().bottom < 60;
+    if (document.documentElement.classList.contains('tl-show') !== past) document.documentElement.classList.toggle('tl-show', past);
     const p = Math.min(1, Math.max(0, scrollY / max));
     fill.style.transform = `scaleX(${drawn(p)})`;
     let current = 0;
