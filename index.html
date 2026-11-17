@@ -557,7 +557,7 @@
     background: var(--ink);
     box-shadow: 0 0 0 2px var(--ink), 0 0 0 6px rgb(39 39 37 / 0.14);
   }
-  .timeline a:hover .dot { transform: scale(1.35); }
+  @media (hover: hover) { .timeline a:hover .dot { transform: scale(1.35); } }
 
   .timeline .tl-label {
     position: absolute;
@@ -576,12 +576,15 @@
     pointer-events: none;
   }
   .timeline li.is-current .tl-label,
-  .timeline a:hover .tl-label,
   .timeline a:focus-visible .tl-label { opacity: 1; transform: translate(-50%, 0); }
   .timeline a:focus-visible { outline: 2px solid var(--ink); outline-offset: 0; }
-  /* While another dot is hovered (or keyboard-focused), the current dot's label steps aside */
-  .timeline ol:has(a:hover) li.is-current a:not(:hover) .tl-label,
   .timeline ol:has(a:focus-visible) li.is-current a:not(:focus-visible) .tl-label { opacity: 0; transform: translate(-50%, 3px); }
+  /* Hover previews only where there's a real pointer: on phones a tapped dot keeps its hover state,
+     which would pin that dot's label on screen and hide the current one */
+  @media (hover: hover) {
+    .timeline a:hover .tl-label { opacity: 1; transform: translate(-50%, 0); }
+    .timeline ol:has(a:hover) li.is-current a:not(:hover) .tl-label { opacity: 0; transform: translate(-50%, 3px); }
+  }
 
   /* ---------- Phones: timeline on top ----------
      iPhone Safari draws the page behind its floating address bar, below where fixed elements can
@@ -3057,8 +3060,13 @@
     if (document.documentElement.classList.contains('tl-show') !== past) document.documentElement.classList.toggle('tl-show', past);
     const p = Math.min(1, Math.max(0, scrollY / max));
     fill.style.transform = `scaleX(${drawn(p)})`;
+    // The current section is the last one whose top has crossed the middle of the window, measured live
+    // so it holds up when a phone's toolbar resizes the window. At the very bottom of the page the last
+    // dot takes over, since the closing section may never reach the middle.
+    const mid = innerHeight / 2;
     let current = 0;
-    items.forEach((it, i) => { if (it.pos * max <= scrollY + 2) current = i; });   // a 2px tolerance, whatever the page length
+    items.forEach((it, i) => { if (i > 0 && it.sec.getBoundingClientRect().top <= mid) current = i; });
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) current = items.length - 1;
     if (current === shown) return;
     shown = current;
     items.forEach((it, i) => {
