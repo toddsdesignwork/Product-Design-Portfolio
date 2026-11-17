@@ -583,6 +583,39 @@
   .timeline ol:has(a:hover) li.is-current a:not(:hover) .tl-label,
   .timeline ol:has(a:focus-visible) li.is-current a:not(:focus-visible) .tl-label { opacity: 0; transform: translate(-50%, 3px); }
 
+  /* ---------- Phones: timeline on top ----------
+     iPhone Safari draws the page behind its floating address bar, below where fixed elements can
+     reach, so a bottom fade leaves a strip of scrolling content under it. Pinned elements do reach
+     the top edge, so on phones the timeline and its solid band move to the top of the screen. */
+  @media (max-width: 640px) {
+    :root {
+      --band: calc(env(safe-area-inset-top, 0px) + 60px);   /* solid gray, down to just below the dots */
+      --band-fade: 28px;                                    /* then a short fade into the content */
+    }
+    .page {
+      padding-top: calc(var(--band) + var(--band-fade));
+      padding-bottom: calc(var(--gap) + env(safe-area-inset-bottom, 0px));
+    }
+    .abyss {
+      top: 0;
+      bottom: auto;
+      left: 0;
+      height: calc(var(--band) + var(--band-fade));
+      background: linear-gradient(to bottom,
+        rgb(192 192 192) 0,
+        rgb(192 192 192) var(--band),
+        rgb(192 192 192 / 0) 100%);
+    }
+    .edge-fill { display: none; }
+    /* Same top as the sidebar, plus room for the label that sits above each dot */
+    .timeline {
+      top: calc(env(safe-area-inset-top, 0px) + var(--gap) + 14px);
+      bottom: auto;
+    }
+    /* Section links land just below the band */
+    .panel, .photo { scroll-margin-top: calc(var(--band) + var(--band-fade)); }
+  }
+
   /* ---------- Live demo: TrustRadius research rail + intent signals ----------
      Rebuilt from the Figma rail (collapsed / expanded / open group), recolored to the
      site's grays. The rail and the signal panel are both 250px; cords join each active
