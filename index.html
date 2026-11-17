@@ -479,17 +479,18 @@
       rgb(192 192 192 / 0.9) 35%,
       rgb(192 192 192 / 1) 48%);   /* fully solid well above the timeline and its labels */
   }
-  /* A solid gray skirt that hangs below the fade, past the bottom edge of the layout viewport.
-     Some mobile browsers (e.g. Safari's floating toolbar) draw page content in the strip below
-     where fixed elements end; this covers that strip so nothing scrolls into view under the timeline. */
-  .abyss::after {
-    content: "";
-    position: absolute;
+  /* Safari 26 on iPhone draws the page behind its floating toolbar, below where fixed elements end.
+     It fills that strip with the background-color of a full-width fixed element touching the bottom
+     edge (a gradient doesn't count). This thin solid strip gives it the page gray to use. */
+  .edge-fill {
+    position: fixed;
     left: 0;
     right: 0;
-    top: 100%;
-    height: 100vh;
-    background: rgb(192 192 192);
+    bottom: 0;
+    height: calc(var(--gap) + env(safe-area-inset-bottom, 0px));
+    z-index: 3;
+    pointer-events: none;
+    background-color: rgb(192 192 192);
   }
 
   /* ---------- Timeline ----------
@@ -1980,6 +1981,7 @@
   </main>
 
   <div class="abyss" aria-hidden="true"></div>
+  <div class="edge-fill" aria-hidden="true"></div>
   <nav class="timeline" aria-label="Page sections">
     <span class="timeline-track" aria-hidden="true"></span>
     <span class="timeline-fill" aria-hidden="true"></span>
