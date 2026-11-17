@@ -27,7 +27,7 @@
     --sidebar-w: 60px;
     --radius: 15px;
     --stroke: 2px;
-    --abyss-h: 120px;        /* height of the bottom fade */
+    --abyss-h: 150px;        /* height of the bottom fade */
     /* Content rhythm: one gap between every block inside a section, growing with the
        headline (32px on phones, about 45px on wide desktops). Section padding is separate. */
     --stack: clamp(32px, 0.5rem + 2.6vw, 56px);
@@ -475,9 +475,9 @@
     pointer-events: none;
     background: linear-gradient(to bottom,
       rgb(192 192 192 / 0) 0%,
-      rgb(192 192 192 / 0.5) 30%,
-      rgb(192 192 192 / 0.95) 50%,
-      rgb(192 192 192 / 1) 60%);
+      rgb(192 192 192 / 0.5) 20%,
+      rgb(192 192 192 / 0.9) 35%,
+      rgb(192 192 192 / 1) 48%);   /* fully solid well above the timeline and its labels */
   }
 
   /* ---------- Timeline ----------
