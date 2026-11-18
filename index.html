@@ -600,7 +600,7 @@
       padding-top: calc(var(--gap) + env(safe-area-inset-top, 0px));
       padding-bottom: calc(var(--gap) + env(safe-area-inset-bottom, 0px));
     }
-    /* Hidden until the intro section has scrolled away (JS adds .tl-show), then they slide down into place */
+    /* Hidden until the intro headline has scrolled away (JS adds .tl-show), then they slide down into place */
     .abyss, .timeline {
       opacity: 0;
       visibility: hidden;
@@ -3053,8 +3053,8 @@
   }
 
   let shown = -1;
-  // Phones show the timeline only once the intro section has scrolled up under where the band sits
-  const intro = items[0].sec;
+  // Phones show the timeline once the intro headline has scrolled up under where the band sits
+  const intro = items[0].sec.querySelector('h1') || items[0].sec;
   function update() {
     const past = intro.getBoundingClientRect().bottom < 60;
     if (document.documentElement.classList.contains('tl-show') !== past) document.documentElement.classList.toggle('tl-show', past);
